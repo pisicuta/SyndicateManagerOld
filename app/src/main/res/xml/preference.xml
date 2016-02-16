@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Syndicate Manager Lottery Preference">
+        <CheckBoxPreference
+            android:key="lotto_preference_checkbox"
+            android:title="Lotto"
+            android:summary="The original 6 number lottery"
+            android:defaultValue="false"/>
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
