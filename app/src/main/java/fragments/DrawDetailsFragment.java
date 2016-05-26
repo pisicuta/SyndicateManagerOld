@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.paul.syndicatemanager.R;
+import com.paulcurle.syndicatemanager.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,8 +28,11 @@ import java.util.List;
 
 import adapters.SyndicateMembersAdapter;
 //import models.AllMembers;
-import dbhelper.DatabaseHelper;
-import dbhelper.SyndicateMemberDataSource;
+//import database.DatabaseHelper;
+//import database.SyndicateMemberDataSource;
+import database.DbHelper;
+import database.EuroDrawDAO;
+import database.SyndicateMemberDAO;
 import models.EuroDraw;
 //import models.EuroDrawHistory;
 import models.SyndicateMember;
@@ -77,6 +80,7 @@ public class DrawDetailsFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
     protected SyndicateMembersAdapter mAdapter;
+
     private RecyclerView.LayoutManager mLayoutManager;
     private boolean blnSuccess;
     private ArrayList<SyndicateMember> syndicateMemberList;
@@ -84,7 +88,7 @@ public class DrawDetailsFragment extends Fragment {
     private ArrayList<EuroDraw> historyList;
 
     private Context mContext;
-    private DatabaseHelper db;
+    private DbHelper db;
 
     public DrawDetailsFragment() {
         // Required empty public constructor
@@ -113,16 +117,13 @@ public class DrawDetailsFragment extends Fragment {
         //TODO Replace with call to dbhelper getallmembers db selection
         Log.i("Reading: ", "Reading all members..");
 //        db = new DatabaseHelper(null);
-        db = DatabaseHelper.getInstance(mContext);
-//        List<SyndicateMember> members = db.getMembers(1); //.getAllContacts();
-        syndicateMemberList = SyndicateMemberDataSource.getAllSyndicateMembers();
-        //syndicateMemberList = AllMembers.get(getActivity()).getallMembers();
+        db = DbHelper.getInstance(mContext);
+        SyndicateMemberDAO smDAO = new SyndicateMemberDAO(mContext);
+        EuroDrawDAO edDAO = new EuroDrawDAO(mContext);
 
+        syndicateMemberList = smDAO.getAllSyndicateMembers();
 
-
-
-        //TODO Replace with call to dbhelper getall draws db selection
-        //historyList = EuroDrawHistory.get(mContext).geteuroDrawHistory();
+        historyList = edDAO.getAllEuroDraws();
     }
 
     @Override
@@ -308,8 +309,8 @@ public class DrawDetailsFragment extends Fragment {
                     if (mball1.isEnabled()) {
                         String inDate = mDateEntryField.getText().toString();
                         EuroDraw ed = new EuroDraw();
-                        ed.setEdDrawDate(inDate);
-                        ed.setEdNumberOfWinningRows(String.valueOf(winningRows));
+                        ed.setDrawDate(inDate);
+                        ed.setNumberOfWinningRows(winningRows);
                         ed.setBall1(String.valueOf(ballArray[0]));
                         ed.setBall2(String.valueOf(ballArray[1]));
                         ed.setBall3(String.valueOf(ballArray[2]));
@@ -341,7 +342,7 @@ public class DrawDetailsFragment extends Fragment {
         };
 
         btnCheckSave.setOnClickListener(btnCheckListener);
-
+//
         rootView.setTag(TAG);
 
         mDrawList = syndicateMemberList;

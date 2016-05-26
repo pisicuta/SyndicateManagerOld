@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.paul.syndicatemanager.R;
+import com.paulcurle.syndicatemanager.R;
 
 import java.util.ArrayList;
 
@@ -71,9 +71,9 @@ public class ShowResultsFragment extends Fragment {
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new EuroDrawHistoryAdapter(euroDrawList, getActivity());   //(euroDrawList, getActivity());
-        // Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter = new EuroDrawHistoryAdapter(euroDrawList, getActivity());   //(euroDrawList, getActivity());
+//        // Set CustomAdapter as the adapter for RecyclerView.
+//        mRecyclerView.setAdapter(mAdapter);
         // END_INCLUDE(initializeRecyclerView)
 
         return rootView;

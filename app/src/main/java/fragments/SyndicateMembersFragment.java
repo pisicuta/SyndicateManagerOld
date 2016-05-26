@@ -3,7 +3,6 @@ package fragments;
 
 //import android.app.Activity;
 //import android.content.Context;
-import android.app.Application;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,20 +10,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.paul.syndicatemanager.R;
+import com.paulcurle.syndicatemanager.R;
 
 import java.util.ArrayList;
 
 import adapters.SyndicateMembersAdapter;
-//import models.AllMembers;
-import dbhelper.DatabaseHelper;
-import dbhelper.SyndicateMemberDataSource;
+import database.DbHelper;
+import database.SyndicateMemberDAO;
 import models.SyndicateMember;
-import utilities.MyApplication;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,22 +47,12 @@ public class SyndicateMembersFragment extends Fragment {
     protected SyndicateMembersAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<SyndicateMember> syndicateMemberList;
+
+    private Context mContext;
+    private DbHelper db;
     private boolean blnSuccess;
 
 
-    // Database fields
-    private SQLiteDatabase database;
-    private DatabaseHelper dbHelper;
-//    private String[] allColumns = { DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_COMMENT };
-
-    public void open() throws SQLException {
-        database = dbHelper.getWritableDatabase();
-    }
-
-    public void close() {
-
-        dbHelper.close();
-    }
 
     public SyndicateMembersFragment() {
         // Required empty public constructor
@@ -88,22 +76,33 @@ public class SyndicateMembersFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Context context = MyApplication.getAppContext();
-        dbHelper = DatabaseHelper.getInstance(context);
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-//        blnSuccess = this.getArguments().getBoolean("fileExists");
-        //TODO Replace with call to dbhelper getallmembers db selection
 
-        //        syndicateMemberList = AllMembers.get(getActivity()).getallMembers();
-       syndicateMemberList = DatabaseHelper.getAllSyndicateMembers();
+        super.onCreate(savedInstanceState);
+        mContext = getContext();
+        //TODO Replace with call to dbhelper getallmembers db selection
+        Log.i("Reading: ", "Reading all members..");
+//        db = new DatabaseHelper(null);
+//        db = DbHelper.getInstance(mContext);
+        SyndicateMemberDAO smDAO = new SyndicateMemberDAO(mContext);
+
+        syndicateMemberList = smDAO.getAllSyndicateMembers();
+
+
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        SyndicateMemberDAO smDAO = new SyndicateMemberDAO(mContext);
+/*
+mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+mRecyclerView.setHasFixedSize(true);
+mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+mRecyclerView.setAdapter(new DataBeanAdapter(dbAdapter.getAllData(), R.layout.item));
+ */
+
 
         View rootView = inflater.inflate(R.layout.fragment_syndicate_members, container, false);
         rootView.setTag(TAG);
@@ -119,6 +118,7 @@ public class SyndicateMembersFragment extends Fragment {
         mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
+        syndicateMemberList = smDAO.getAllSyndicateMembers();
         mAdapter = new SyndicateMembersAdapter(syndicateMemberList, getActivity());   //(euroDrawList, getActivity());
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
